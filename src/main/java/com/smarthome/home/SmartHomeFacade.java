@@ -1,58 +1,62 @@
 package com.smarthome.home;
 
-import com.smarthome.device.Device;
-import com.smarthome.device.Heater;
-import com.smarthome.device.Light;
 import com.smarthome.device.MusicPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.smarthome.device.Room;
 
 public class SmartHomeFacade {
-    private final Light light;
-    private final Heater heater;
+
+    private final Room livingRoom;
+    private final Room kitchen;
     private final MusicPlayer musicPlayer;
-    private final List<Device> allDevices;
+    private final ActionLogger logger;
 
-    public SmartHomeFacade(Light light, Heater heater, MusicPlayer musicPlayer) {
-        this.light = light;
-        this.heater = heater;
+    public SmartHomeFacade(Room livingRoom, Room kitchen, MusicPlayer musicPlayer, ActionLogger logger) {
+        this.livingRoom = livingRoom;
+        this.kitchen = kitchen;
         this.musicPlayer = musicPlayer;
-
-        this.allDevices = new ArrayList<>();
-        allDevices.add(light);
-        allDevices.add(heater);
-        allDevices.add(musicPlayer);
+        this.logger = logger;
     }
 
     public void goodMorning() {
-        light.turnOn();
-        heater.turnOn();
-        musicPlayer.turnOn();
+        livingRoom.turnOn("Light");
+        livingRoom.turnOn("AC");
+        kitchen.turnOn("Light");
+        musicPlayer.play();
+
+        logger.log("Гостиная", "Сценарий 'Утро': свет и кондиционер включены");
+        logger.log("Кухня", "Сценарий 'Утро': свет включён");
+        logger.log("Плеер", "Воспроизведение музыки");
     }
 
     public void leaveHome() {
-        for (Device d : allDevices) {
-            d.turnOff();
-        }
-    }
+        livingRoom.turnOff("Light");
+        livingRoom.turnOff("AC");
+        livingRoom.turnOff("Speaker");
 
-    public String getStatusReport() {
-        return "Свет: " + light.getStatus() +
-                ", Отопление: " + heater.getStatus() +
-                ", Музыка: " + musicPlayer.getStatus() +
-                ", Трек: " + musicPlayer.getCurrentTrackName();
+        kitchen.turnOff("Light");
+        kitchen.turnOff("AC");
+        kitchen.turnOff("Speaker");
+
+        musicPlayer.stop();
+
+        logger.log("Гостиная", "Сценарий 'Ушел': все выключено");
+        logger.log("Кухня", "Сценарий 'Ушел': все выключено");
+        logger.log("Плеер", "Остановлен");
     }
 
     public MusicPlayer getMusicPlayer() {
         return musicPlayer;
     }
 
-    public Light getLight() {
-        return light;
+    public Room getLivingRoom() {
+        return livingRoom;
     }
 
-    public Heater getHeater() {
-        return heater;
+    public Room getKitchen() {
+        return kitchen;
+    }
+
+    public ActionLogger getLogger() {
+        return logger;
     }
 }

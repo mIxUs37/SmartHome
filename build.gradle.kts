@@ -4,8 +4,8 @@ plugins {
     id("java")
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "com.smarthome"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -13,7 +13,11 @@ repositories {
 
 javafx {
     version = "17.0.8"
-    modules = listOf("javafx.controls", "javafx.fxml", "javafx.media")
+    modules = listOf(
+        "javafx.controls",
+        "javafx.fxml",
+        "javafx.media"
+    )
 }
 
 dependencies {
