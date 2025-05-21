@@ -28,9 +28,9 @@ public class SmartHomeFacade {
 
         musicPlayer.play();
 
-        logger.log("Гостиная", "включены все устройства");
-        logger.log("Кухня", "включены все устройства");
-        logger.log("Плеер", "музыка запущена");
+        logger.log("Living Room", "All devices turned ON");
+        logger.log("Kitchen", "All devices turned ON");
+        logger.log("MusicPlayer", "Playback started");
     }
 
     public void turnAllOff() {
@@ -44,9 +44,9 @@ public class SmartHomeFacade {
 
         musicPlayer.stop();
 
-        logger.log("Гостиная", "всё выключено");
-        logger.log("Кухня", "всё выключено");
-        logger.log("Плеер", "музыка остановлена");
+        logger.log("Living Room", "All devices turned OFF");
+        logger.log("Kitchen", "All devices turned OFF");
+        logger.log("MusicPlayer", "Playback stopped");
     }
 
     public MusicPlayer getMusicPlayer() {

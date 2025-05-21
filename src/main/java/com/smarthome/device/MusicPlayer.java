@@ -2,6 +2,7 @@ package com.smarthome.device;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -103,6 +104,14 @@ public class MusicPlayer implements Device {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Duration getCurrentTime() {
+        return mediaPlayer != null ? mediaPlayer.getCurrentTime() : Duration.ZERO;
+    }
+
+    public Duration getTotalDuration() {
+        return mediaPlayer != null ? mediaPlayer.getTotalDuration() : Duration.UNKNOWN;
     }
 
     @Override
