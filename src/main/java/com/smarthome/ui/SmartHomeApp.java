@@ -24,7 +24,6 @@ public class SmartHomeApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        // --- Логика и комнаты ---
         logger = new ActionLogger();
 
         Room livingRoom = new Room("Гостиная");
@@ -39,14 +38,30 @@ public class SmartHomeApp extends Application {
         kitchen.addDevice("Speaker", new Speaker());
 
         MusicPlayer musicPlayer = new MusicPlayer();
-        musicPlayer.loadPlaylistFromFile(playlistFile); // автозагрузка
+        musicPlayer.loadPlaylistFromFile(playlistFile);
 
         smartHome = new SmartHomeFacade(livingRoom, kitchen, musicPlayer, logger);
 
-        // --- Верхняя панель ---
         VBox topPane = new VBox(10);
         topPane.setPadding(new Insets(10));
         Label roomLabel = new Label("Управление комнатами:");
+
+        // ВКЛ / ВЫКЛ ВСЁ
+        HBox quickButtons = new HBox(10);
+        Button btnAllOn = new Button("Включить всё");
+        Button btnAllOff = new Button("Выключить всё");
+
+        btnAllOn.setOnAction(e -> {
+            smartHome.turnAllOn();
+            updateLog();
+        });
+
+        btnAllOff.setOnAction(e -> {
+            smartHome.turnAllOff();
+            updateLog();
+        });
+
+        quickButtons.getChildren().addAll(btnAllOn, btnAllOff);
 
         GridPane roomControl = new GridPane();
         roomControl.setHgap(10);
@@ -79,9 +94,8 @@ public class SmartHomeApp extends Application {
         logArea.setEditable(false);
         logArea.setPrefHeight(120);
 
-        topPane.getChildren().addAll(roomLabel, roomControl, new Label("История действий:"), logArea);
+        topPane.getChildren().addAll(roomLabel, quickButtons, roomControl, new Label("История действий:"), logArea);
 
-        // --- Нижняя панель: музыка ---
         VBox bottomPane = new VBox(10);
         bottomPane.setPadding(new Insets(10));
 
@@ -95,7 +109,6 @@ public class SmartHomeApp extends Application {
         ListView<String> songList = new ListView<>();
         songList.setPrefHeight(120);
 
-        // Загрузка песен
         btnLoad.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Выберите MP3 файлы");
@@ -104,14 +117,11 @@ public class SmartHomeApp extends Application {
             if (files != null) {
                 musicPlayer.loadPlaylist(files);
                 musicPlayer.savePlaylistToFile(playlistFile);
-
-                // обновить список GUI
                 songList.getItems().clear();
                 musicPlayer.getPlaylist().forEach(f -> songList.getItems().add(f.getName()));
                 songLabel.setText("Текущий трек: " + musicPlayer.getCurrentTrackName());
             }
         });
-
 
         btnPlay.setOnAction(e -> {
             musicPlayer.play();
@@ -133,25 +143,23 @@ public class SmartHomeApp extends Application {
             songLabel.setText("▶ " + musicPlayer.getCurrentTrackName());
         });
 
+        songList.setOnMouseClicked(e -> {
+            int index = songList.getSelectionModel().getSelectedIndex();
+            if (index >= 0) {
+                musicPlayer.play(index);
+                songLabel.setText("▶ " + musicPlayer.getCurrentTrackName());
+            }
+        });
+
         songList.getItems().clear();
         if (musicPlayer.getPlaylist() != null) {
             musicPlayer.getPlaylist().forEach(f -> songList.getItems().add(f.getName()));
             songLabel.setText("Текущий трек: " + musicPlayer.getCurrentTrackName());
         }
 
-
-        // отображение плейлиста при старте
-        if (musicPlayer.getPlaylist() != null) {
-            for (File file : musicPlayer.getPlaylist()) {
-                songList.getItems().add(file.getName());
-            }
-            songLabel.setText("Текущий трек: " + musicPlayer.getCurrentTrackName());
-        }
-
         HBox controls = new HBox(10, btnPrev, btnPlay, btnPause, btnNext);
         bottomPane.getChildren().addAll(new HBox(10, btnLoad), songLabel, songList, controls);
 
-        // --- Layout ---
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(javafx.geometry.Orientation.VERTICAL);
         splitPane.getItems().addAll(topPane, bottomPane);
@@ -161,7 +169,6 @@ public class SmartHomeApp extends Application {
         stage.setScene(scene);
         stage.setTitle("Умный Дом + Музыка");
 
-        // сохранить при закрытии
         stage.setOnCloseRequest(e -> musicPlayer.savePlaylistToFile(playlistFile));
         stage.show();
     }

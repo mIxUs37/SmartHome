@@ -17,18 +17,23 @@ public class SmartHomeFacade {
         this.logger = logger;
     }
 
-    public void goodMorning() {
+    public void turnAllOn() {
         livingRoom.turnOn("Light");
         livingRoom.turnOn("AC");
+        livingRoom.turnOn("Speaker");
+
         kitchen.turnOn("Light");
+        kitchen.turnOn("AC");
+        kitchen.turnOn("Speaker");
+
         musicPlayer.play();
 
-        logger.log("Гостиная", "Сценарий 'Утро': свет и кондиционер включены");
-        logger.log("Кухня", "Сценарий 'Утро': свет включён");
-        logger.log("Плеер", "Воспроизведение музыки");
+        logger.log("Гостиная", "включены все устройства");
+        logger.log("Кухня", "включены все устройства");
+        logger.log("Плеер", "музыка запущена");
     }
 
-    public void leaveHome() {
+    public void turnAllOff() {
         livingRoom.turnOff("Light");
         livingRoom.turnOff("AC");
         livingRoom.turnOff("Speaker");
@@ -39,9 +44,9 @@ public class SmartHomeFacade {
 
         musicPlayer.stop();
 
-        logger.log("Гостиная", "Сценарий 'Ушел': все выключено");
-        logger.log("Кухня", "Сценарий 'Ушел': все выключено");
-        logger.log("Плеер", "Остановлен");
+        logger.log("Гостиная", "всё выключено");
+        logger.log("Кухня", "всё выключено");
+        logger.log("Плеер", "музыка остановлена");
     }
 
     public MusicPlayer getMusicPlayer() {
