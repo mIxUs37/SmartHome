@@ -34,7 +34,6 @@ public class SmartHomeApp extends Application {
     private Timeline timer;
     private MusicPlayer musicPlayer;
 
-    @Override
     public void start(Stage stage) {
         logger = new ActionLogger();
         Room livingRoom = new Room("Living Room");

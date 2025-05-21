@@ -114,19 +114,16 @@ public class MusicPlayer implements Device {
         return mediaPlayer != null ? mediaPlayer.getTotalDuration() : Duration.UNKNOWN;
     }
 
-    @Override
     public void turnOn() {
         isOn = true;
         play();
     }
 
-    @Override
     public void turnOff() {
         isOn = false;
         stop();
     }
 
-    @Override
     public String getStatus() {
         return isOn ? "Playing" : "Stopped";
     }
